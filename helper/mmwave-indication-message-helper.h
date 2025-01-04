@@ -64,7 +64,17 @@ public:
   void AddCuCpUePmItem (std::string ueImsiComplete, long numDrb, long drbRelAct,
                         Ptr<L3RrcMeasurements> l3RrcMeasurementServing,
                         Ptr<L3RrcMeasurements> l3RrcMeasurementNeigh);
-
+  void AddservSINRsValue (std::string ueImsiComplete, 
+                           uint16_t  servCellid,  double servSINR,  double servconvertedSINR);                      
+  void AddheighSINRsValue (std::string ueImsiComplete, 
+                             uint16_t  neigCellid1,  double neigSINR1,  double neigconvertedSINR1,
+                             uint16_t  neigCellid2,  double neigSINR2,  double neigconvertedSINR2,
+                             uint16_t  neigCellid3,  double neigSINR3,  double neigconvertedSINR3,
+                             uint16_t  neigCellid4,  double neigSINR4,  double neigconvertedSINR4,
+                             uint16_t  neigCellid5,  double neigSINR5,  double neigconvertedSINR5,
+                             uint16_t  neigCellid6,  double neigSINR6,  double neigconvertedSINR6,
+                             uint16_t  neigCellid7,  double neigSINR7,  double neigconvertedSINR7,
+                             uint16_t  neigCellid8,  double neigSINR8,  double neigconvertedSINR8);
 private:
 };
 

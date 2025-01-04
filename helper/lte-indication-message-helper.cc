@@ -41,23 +41,57 @@ LteIndicationMessageHelper::AddCuUpUePmItem (std::string ueImsiComplete, long tx
                                              double pdcpLatency)
 {
   Ptr<MeasurementItemList> ueVal = Create<MeasurementItemList> (ueImsiComplete);
-
+  
   if (!m_reducedPmValues)
     {
       // UE-specific PDCP SDU volume from LTE eNB. Unit is Mbits
       ueVal->AddItem<long> ("DRB.PdcpSduVolumeDl_Filter.UEID", txBytes);
-
       // UE-specific number of PDCP SDUs from LTE eNB
       ueVal->AddItem<long> ("Tot.PdcpSduNbrDl.UEID", txDlPackets);
-
       // UE-specific Downlink IP combined EN-DC throughput from LTE eNB. Unit is kbps
       ueVal->AddItem<double> ("DRB.PdcpSduBitRateDl.UEID", pdcpThroughput);
-
       //UE-specific Downlink IP combined EN-DC throughput from LTE eNB
       ueVal->AddItem<double> ("DRB.PdcpSduDelayDl.UEID", pdcpLatency);
     }
-
   m_msgValues.m_ueIndications.insert (ueVal);
+  
+
+   if (!m_reducedPmValues)
+    {
+      ueMeasItem uemeasitem;
+      uemeasitem.ueID = ueImsiComplete;
+      MeasItem measitem;
+      std::vector <MeasItem> measitems;
+      // UE-specific PDCP SDU volume from LTE eNB. Unit is Mbits
+      measitem.measName = "DRB.PdcpSduVolumeDl_Filter.UEID";
+      measitem.measValue = txBytes;
+      measitems.push_back(measitem);
+      // UE-specific number of PDCP SDUs from LTE eNB
+      measitem.measName = "Tot.PdcpSduNbrDl.UEID";
+      measitem.measValue = txDlPackets;
+      measitems.push_back(measitem);
+
+      // UE-specific Downlink IP combined EN-DC throughput from LTE eNB. Unit is kbps
+      measitem.measName = "DRB.PdcpSduBitRateDl.UEID";
+      measitem.measValue = (long) std::ceil (pdcpThroughput); // double value
+      measitems.push_back(measitem);
+
+      //UE-specific Downlink IP combined EN-DC throughput from LTE eNB
+      measitem.measName = "DRB.PdcpSduDelayDl.UEID";
+      measitem.measValue = (long) std::ceil (pdcpLatency); // double value
+      measitems.push_back(measitem);
+
+      uemeasitem.measItems = measitems;
+      m_msgValues.m_UeMeasItems.push_back (uemeasitem);
+      for (auto ueitem : m_msgValues.m_UeMeasItems){
+        printf (" \n[Jlee-HLEPLER] UE ID : %s", ueitem.ueID.c_str());
+
+        for (auto mesitem : ueitem.measItems) {
+            printf (" \n [Jlee-HLEPLER] Mesaurement Label : %s ", mesitem.measName.c_str());
+            printf (" \n [Jlee-HLEPLER] Mesaurement Label : %ld ", mesitem.measValue);
+        }
+      }
+    }
 }
 
 void
@@ -69,6 +103,19 @@ LteIndicationMessageHelper::AddCuUpCellPmItem (double cellAverageLatency)
       cellVal->AddItem<double> ("DRB.PdcpSduDelayDl", cellAverageLatency);
       m_msgValues.m_cellMeasurementItems = cellVal;
     }
+
+   MeasItem measitem;
+   if (!m_reducedPmValues)
+    {
+      measitem.measName = "DRB.PdcpSduDelayDl";
+      measitem.measValue =  (long) std::ceil (cellAverageLatency); // double value ;
+      m_msgValues.m_CellMeasItems.push_back(measitem);
+    }
+  // check
+  for (auto mesitem : m_msgValues.m_CellMeasItems){
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement Label : %s ", mesitem.measName.c_str());
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement value : %ld ", mesitem.measValue);
+  }
 }
 
 void
@@ -76,13 +123,32 @@ LteIndicationMessageHelper::FillCuUpValues (std::string plmId, long pdcpBytesUl,
 {
   m_cuUpValues->m_pDCPBytesUL = pdcpBytesUl;
   m_cuUpValues->m_pDCPBytesDL = pdcpBytesDl;
-  FillBaseCuUpValues (plmId);
+
+  MeasItem measitem; // label 명 변경
+  measitem.measName = "m_pDCPBytesUL";
+  measitem.measValue = pdcpBytesUl;
+  m_msgValues.m_CellMeasItems.push_back(measitem);
+  measitem.measName = "m_pDCPBytesDL";
+  measitem.measValue = pdcpBytesDl;
+  m_msgValues.m_CellMeasItems.push_back(measitem);
+  for (auto mesitem : m_msgValues.m_CellMeasItems){
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement Label : %s ", mesitem.measName.c_str());
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement value : %ld ", mesitem.measValue);
+  }
 }
 
 void
 LteIndicationMessageHelper::FillCuCpValues (uint16_t numActiveUes)
 {
-  FillBaseCuCpValues (numActiveUes);
+  //FillBaseCuCpValues (numActiveUes);
+  MeasItem measitem; // label 명 변경
+  measitem.measName = "numActiveUes";
+  measitem.measValue = numActiveUes;
+  m_msgValues.m_CellMeasItems.push_back(measitem);
+  for (auto mesitem : m_msgValues.m_CellMeasItems){
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement Label : %s ", mesitem.measName.c_str());
+    printf (" \n [Jlee-HLEPLER] Cell Mesaurement value : %ld ", mesitem.measValue);
+  }
 }
 
 void
@@ -97,6 +163,34 @@ LteIndicationMessageHelper::AddCuCpUePmItem (std::string ueImsiComplete, long nu
       ueVal->AddItem<long> ("DRB.RelActNbr.5QI.UEID", drbRelAct); // not modeled in the simulator
     }
   m_msgValues.m_ueIndications.insert (ueVal);
+
+  if (!m_reducedPmValues)
+    {
+      ueMeasItem uemeasitem;
+      uemeasitem.ueID = ueImsiComplete;
+      MeasItem measitem;
+      std::vector <MeasItem> measitems;
+
+      measitem.measName = "DRB.EstabSucc.5QI.UEID";
+      measitem.measValue = numDrb;
+      measitems.push_back(measitem);
+      measitem.measName = "DRB.RelActNbr.5QI.UEID";
+      measitem.measValue = drbRelAct;
+      measitems.push_back(measitem);
+
+      uemeasitem.measItems = measitems;
+      m_msgValues.m_UeMeasItems.push_back (uemeasitem);
+      // check
+      for (auto ueitem : m_msgValues.m_UeMeasItems){
+        printf (" \n[Jlee-HLEPLER] UE ID : %s", ueitem.ueID.c_str());
+
+        for (auto mesitem : ueitem.measItems) {
+            printf (" \n [Jlee-HLEPLER] Mesaurement Label : %s ", mesitem.measName.c_str());
+            printf (" \n [Jlee-HLEPLER] Mesaurement Label : %ld ", mesitem.measValue);
+        }
+      }
+    }
+
 }
 
 LteIndicationMessageHelper::~LteIndicationMessageHelper ()

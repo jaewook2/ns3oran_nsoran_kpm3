@@ -53,7 +53,17 @@ extern "C" {
 //===================================
 
 }
-
+/** Create New Vector for test to be delted */
+/*Measure Type : present,  */
+struct MeasItem {
+  std::string measName;
+  long measValue;
+};
+struct ueMeasItem{
+  std::string ueID ;
+  std::vector <MeasItem> measItems;
+};
+/**/
 namespace ns3 {
 
   class KpmIndicationHeader : public SimpleRefCount<KpmIndicationHeader>
@@ -248,6 +258,10 @@ namespace ns3 {
       Ptr<PmContainerValues> m_pmContainerValues; //!< struct containing values to be inserted in the PM Container
       Ptr<MeasurementItemList> m_cellMeasurementItems; //!< list of cell-specific Measurement Information Items
       std::set<Ptr<MeasurementItemList>> m_ueIndications; //!< list of Measurement Information Items
+
+            /** Create New Vector for test to be delted */
+      std::vector<ueMeasItem> m_UeMeasItems;
+      std::vector <MeasItem> m_CellMeasItems;
     };
 
     KpmIndicationMessage (KpmIndicationMessageValues values);
@@ -327,14 +341,16 @@ OCTET_STRING_t cp_plmn_identity_to_octant_string (uint8_t src)
     
   private:
     static void CheckConstraints (KpmIndicationMessageValues values);
+    /*
     void FillPmContainer (PF_Container_t *ranContainer, 
                           Ptr<PmContainerValues> values);
     void FillOCuUpContainer (PF_Container_t *ranContainer, 
                             Ptr<OCuUpContainerValues> values);
-    void FillOCuCpContainer (PF_Container_t *ranContainer, 
+    //void FillOCuCpContainer (PF_Container_t *ranContainer, 
                              Ptr<OCuCpContainerValues> values);
-    void FillODuContainer (PF_Container_t *ranContainer, 
+    //void FillODuContainer (PF_Container_t *ranContainer, 
                            Ptr<ODuContainerValues> values);
+    */
     void FillAndEncodeKpmIndicationMessage (E2SM_KPM_IndicationMessage_t *descriptor,
                                             KpmIndicationMessageValues values);
     void Encode (E2SM_KPM_IndicationMessage_t *descriptor);
