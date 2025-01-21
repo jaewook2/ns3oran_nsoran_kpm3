@@ -4,6 +4,7 @@
  * Copyright (c) 2022 Sapienza, University of Rome
  * Copyright (c) 2022 University of Padova
  * Copyright (c) 2024 Orange Innovation Egypt
+ * Copyright (c) 2025 Pukyung National University, Korea
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -24,10 +25,10 @@
  *       Mostafa Ashraf <mostafa.ashraf.ext@orange.com>
  *       Aya Kamal <aya.kamal.ext@orange.com>
  *       Abdelrhman Soliman <abdelrhman.soliman.ext@orange.com>
+ *       Jaewook Lee <jlee0315@pknu.ac.kr>
  */
 
 #include <ns3/kpm-indication.h>
-
 #include <ns3/asn1c-types.h>
 #include <ns3/log.h>
 
@@ -152,8 +153,7 @@ OCTET_STRING_t KpmIndicationHeader::get_time_now_us() {
   return dst;
 }
 
-OCTET_STRING_t KpmIndicationHeader::int_64_to_octet_string(uint64_t x)
-{
+OCTET_STRING_t KpmIndicationHeader::int_64_to_octet_string(uint64_t x) {
     OCTET_STRING_t asn = {0};
 
     asn.buf = (uint8_t*) calloc(sizeof(x) + 1, sizeof(char));
@@ -178,8 +178,7 @@ OCTET_STRING_t KpmIndicationHeader::int_64_to_octet_string(uint64_t x)
 //   return dst;
 // }
 
-uint64_t KpmIndicationHeader::octet_string_to_int_64(OCTET_STRING_t asn)
-{
+uint64_t KpmIndicationHeader::octet_string_to_int_64(OCTET_STRING_t asn) {
     uint64_t x = {0};
 
     memcpy(&x, asn.buf, asn.size);
@@ -188,8 +187,7 @@ uint64_t KpmIndicationHeader::octet_string_to_int_64(OCTET_STRING_t asn)
 }
 
 void
-KpmIndicationHeader::Encode (E2SM_KPM_IndicationHeader_t *descriptor)
-{
+KpmIndicationHeader::Encode (E2SM_KPM_IndicationHeader_t *descriptor) {
   asn_codec_ctx_t *opt_cod = 0; // disable stack bounds checking
   asn_encode_to_new_buffer_result_s encodedHeader = asn_encode_to_new_buffer (
       opt_cod, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_KPM_IndicationHeader, descriptor);
@@ -208,8 +206,7 @@ KpmIndicationHeader::Encode (E2SM_KPM_IndicationHeader_t *descriptor)
 //Update by Jlee
 void
 KpmIndicationHeader::FillAndEncodeKpmRicIndicationHeader (E2SM_KPM_IndicationHeader_t *descriptor,
-                                                          KpmRicIndicationHeaderValues values)
-{
+                                                          KpmRicIndicationHeaderValues values){
   /*
   indicationHeader_formats
  - present
@@ -243,16 +240,14 @@ KpmIndicationHeader::FillAndEncodeKpmRicIndicationHeader (E2SM_KPM_IndicationHea
   ASN_STRUCT_FREE (asn_DEF_E2SM_KPM_IndicationHeader_Format1, ind_header);
 }
 
-KpmIndicationMessage::KpmIndicationMessage (KpmIndicationMessageValues values)
-{
+KpmIndicationMessage::KpmIndicationMessage (KpmIndicationMessageValues values) {
   E2SM_KPM_IndicationMessage_t *descriptor = new E2SM_KPM_IndicationMessage_t ();
   CheckConstraints (values);
   FillAndEncodeKpmIndicationMessage (descriptor, values);
   delete descriptor;
 }
 
-KpmIndicationMessage::~KpmIndicationMessage ()
-{
+KpmIndicationMessage::~KpmIndicationMessage () {
   free (m_buffer);
   m_size = 0;
 }
@@ -269,8 +264,7 @@ typedef struct
 } darsh_byte_array_t;
 
 void
-KpmIndicationMessage::Encode (E2SM_KPM_IndicationMessage_t *descriptor)
-{
+KpmIndicationMessage::Encode (E2SM_KPM_IndicationMessage_t *descriptor) {
       printf ("[JLEE: Encoding E2SM KPM Indicatin Message] ");
       asn_codec_ctx_t *opt_cod = 0; // disable stack bounds checking
       asn_encode_to_new_buffer_result_s encodedMsg = asn_encode_to_new_buffer (
@@ -287,7 +281,6 @@ KpmIndicationMessage::Encode (E2SM_KPM_IndicationMessage_t *descriptor)
 
       m_buffer = encodedMsg.buffer;
       m_size = encodedMsg.result.encoded;
-    }
 }
 
 //update by jlee
@@ -489,7 +482,7 @@ indicationMessage_Format1
       } else {
             printf ("values.m_ueIndications.size() == 0 \n ");
             UEMeasurementReportItem_t *ueMeasItem =  (UEMeasurementReportItem_t *) calloc (1, sizeof (UEMeasurementReportItem_t));
-
+            // To 수정
             UEID_GNB_t *gnb_asn = (UEID_GNB_t *) calloc (1, sizeof (UEID_GNB_t));
             assert (gnb_asn != NULL && "Memory exhausted");
             gnb_asn->amf_UE_NGAP_ID.buf = (uint8_t *) calloc (5, sizeof (uint8_t));

@@ -4,6 +4,7 @@
  * Copyright (c) 2022 Sapienza, University of Rome
  * Copyright (c) 2022 University of Padova
  * Copyright (c) 2024 Orange Innovation Egypt
+ * Copyright (c) 2025 Pukyung National University, Korea
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -24,6 +25,7 @@
  *		   Mostafa Ashraf <mostafa.ashraf.ext@orange.com>
  *       Aya Kamal <aya.kamal.ext@orange.com>
  *       Abdelrhman Soliman <abdelrhman.soliman.ext@orange.com>
+ *       Jaewook Lee <jlee0315@pknu.ac.kr>
  */
 
 #ifndef KPM_INDICATION_H
@@ -259,7 +261,7 @@ namespace ns3 {
       Ptr<MeasurementItemList> m_cellMeasurementItems; //!< list of cell-specific Measurement Information Items
       std::set<Ptr<MeasurementItemList>> m_ueIndications; //!< list of Measurement Information Items
 
-            /** Create New Vector for test to be delted */
+      /** Create New Vector for test to be delted */
       std::vector<ueMeasItem> m_UeMeasItems;
       std::vector <MeasItem> m_CellMeasItems;
     };
