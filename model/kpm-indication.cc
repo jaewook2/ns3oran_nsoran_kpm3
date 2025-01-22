@@ -338,7 +338,7 @@ indicationMessage_Format1
   if (ENABLE_FORMAT_ONE)
     {
  
-      printf ("ENABLE_FORMAT_ONE\n ");
+      printf ("\n\n  ENABLE_FORMAT_ONE\n ");
 
       E2SM_KPM_IndicationMessage_t *kpmindmessage = (E2SM_KPM_IndicationMessage_t *) calloc (1, sizeof (E2SM_KPM_IndicationMessage_t));
 
@@ -370,7 +370,7 @@ indicationMessage_Format1
     }
   else
     {
-      printf ("ENABLE_FORMAT_THREE\n "); 
+      printf ("\n\n FORMAT_THREE_Message_Decoding\n "); 
       E2SM_KPM_IndicationMessage_t *kpmindmessage = (E2SM_KPM_IndicationMessage_t *) calloc (1, sizeof (E2SM_KPM_IndicationMessage_t));
 
       // Create Format 3
@@ -399,7 +399,7 @@ indicationMessage_Format1
               //asn_ulong2INTEGER (&gnb_asn->amf_UE_NGAP_ID,
               //static_cast<unsigned long>(KpmIndicationHeader::octet_string_to_int_64(ueIndication->GetId())));
               asn_ulong2INTEGER (&gnb_asn->amf_UE_NGAP_ID, 1);
-              printf (" \n[Jlee] UE ID : %s", ueitem.ueID.c_str());
+              printf (" \n[Jlee-Encoding] UE ID : %s", ueitem.ueID.c_str());
 
               gnb_asn->guami.aMFPointer = cp_amf_ptr_to_bit_string ((rand () % 2 ^ 6) + 0);
               gnb_asn->guami.aMFSetID = cp_amf_set_id_to_bit_string ((rand () % 2 ^ 10) + 0);
@@ -451,8 +451,8 @@ indicationMessage_Format1
                   memcpy (meastypename->buf, meas_name.c_str (), meastypename->size);
                   meastype->choice.measName = *meastypename;
                   // for loging
-                  printf (" \n [Jlee] Mesaurement Label : %s ", mesitem.measName.c_str());
-                  printf (" \n [Jlee] Mesaurement Label : %ld ", mesitem.measValue);
+                  printf (" \n [Jlee-Encoding] Mesaurement Label : %s ", mesitem.measName.c_str());
+                  printf (" \n [Jlee-Encoding] Mesaurement Label : %ld ", mesitem.measValue);
 
 
                   // 2-3) fill up labelinfolist
